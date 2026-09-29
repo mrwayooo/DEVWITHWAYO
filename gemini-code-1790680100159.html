@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WAYO - Portfolio</title>
+  <style>
+    /* ==================== RESET & THEME VARIABLES ==================== */
+    :root {
+      --bg-color: #0b0c10;
+      --card-bg: #141721;
+      --img-bg: #1e2230;
+      --text-main: #e0e6ed;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+      --accent: #6366f1;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --nav-bg: rgba(11, 12, 16, 0.85);
+      --button-bg: transparent;
+      --button-border: rgba(241, 245, 249, 0.25);
+      --button-text: #f1f5f9;
+      --button-hover-bg: #f1f5f9;
+      --button-hover-text: #0b0c10;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --img-bg: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --text-muted: #94a3b8;
+      --accent: #4f46e5;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --nav-bg: rgba(248, 250, 252, 0.9);
+      --button-bg: transparent;
+      --button-border: rgba(15, 23, 42, 0.25);
+      --button-text: #0f172a;
+      --button-hover-bg: #0f172a;
+      --button-hover-text: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* SPOTLIGHT CURSOR */
+    .spotlight {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .spotlight { display: none; }
+    }
+
+    /* ==================== HEADER / NAV ==================== */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 6vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .logo::after {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      margin-left: 4px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    nav a {
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      color: var(--text-sub);
+      transition: color 0.3s ease;
+      position: relative;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--text-main);
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background-color: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after, nav a.active::after {
+      width: 100%;
+    }
+
+    /* THEME TOGGLE BUTTON */
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--accent);
+    }
+
+    /* ==================== PAGE WINDOWS (SECTIONS) ==================== */
+    .page-window {
+      display: none;
+      min-height: 100vh;
+      padding: 160px 6vw 80px;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .page-window.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==================== HERO SECTION ==================== */
+    .hero-profile-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .main-profile-img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .main-profile-img:hover {
+      transform: scale(1.05);
+    }
+
+    .hero-tag {
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .hero-title {
+      font-size: clamp(2.3rem, 6.5vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      margin-bottom: 32px;
+      max-width: 1100px;
+    }
+
+    .hero-title span {
+      color: var(--text-muted);
+      transition: color 0.5s ease;
+    }
+
+    .hero-title:hover span {
+      color: var(--text-main);
+    }
+
+    .hero-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 32px;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .hero-desc {
+      max-width: 520px;
+      color: var(--text-sub);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    /* STATS GRID */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-bottom: 80px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      letter-spacing: 0.5px;
+    }
+
+    /* HOME SECTION BLOCK */
+    .home-section {
+      margin-bottom: 80px;
+    }
+
+    .home-section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .home-section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 20px;
+      background-color: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* SERVICES GRID */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.3s ease;
+    }
+
+    .service-card:hover {
+      border-color: var(--accent);
+    }
+
+    .service-icon {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    .service-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .service-desc {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    /* QUICK SHOWCASE */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .showcase-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.3s ease;
+    }
+
+    .showcase-card:hover {
+      border-color: var(--accent);
+    }
+
+    .showcase-img {
+      height: 180px;
+      background: var(--img-bg);
+      overflow: hidden;
+    }
+
+    .showcase-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .showcase-info {
+      padding: 20px;
+    }
+
+    .showcase-tag {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .showcase-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .showcase-desc {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    /* BUTTON */
+    .btn-twist {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 14px 28px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      border: 1px solid var(--button-border);
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.4s ease, transform 0.2s ease;
+    }
+
+    .btn-twist::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background-color: var(--button-hover-bg);
+      border-radius: 99px;
+      z-index: 0;
+      transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-twist span, .btn-twist .btn-icon {
+      position: relative;
+      z-index: 1;
+      transition: color 0.4s ease;
+    }
+
+    .btn-twist .btn-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s ease, color 0.4s ease;
+    }
+
+    .btn-twist:hover::before { height: 100%; }
+    .btn-twist:hover span, .btn-twist:hover .btn-icon { color: var(--button-hover-text); }
+    .btn-twist:hover .btn-icon { transform: rotate(-45deg); }
+
+    /* ==================== ABOUT ME SECTION ==================== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .about-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .about-card h3 {
+      font-size: 1.3rem;
+      color: var(--accent);
+    }
+
+    .about-card p {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .skill-tag {
+      background: var(--img-bg);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+    }
+
+    /* ==================== WORK / PROJECTS ==================== */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+      perspective: 1000px;
+    }
+
+    .project-card {
+      position: relative;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      transition: transform 0.1s ease-out, border-color 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      transform-style: preserve-3d;
+    }
+
+    .project-card:nth-child(1) { grid-column: span 12; }
+    .project-card:nth-child(2) { grid-column: span 6; }
+    .project-card:nth-child(3) { grid-column: span 6; }
+
+    .project-img-wrapper {
+      width: 100%;
+      height: 280px;
+      background-color: var(--img-bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card:nth-child(1) .project-img-wrapper {
+      height: 380px;
+    }
+
+    .project-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .project-card:hover .project-img-wrapper img {
+      transform: scale(1.08);
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+    }
+
+    .project-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(11, 12, 16, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      font-weight: 700;
+      border: 1px solid var(--border-color);
+      z-index: 2;
+    }
+
+    .project-info {
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--card-bg);
+    }
+
+    .project-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .project-category {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    /* ==================== CONTACT CARDS ==================== */
+    .contact-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .info-banner {
+      padding: 32px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      transition: border-color 0.3s ease;
+    }
+
+    .info-banner:hover {
+      border-color: var(--accent);
+    }
+
+    .info-content h4 {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .info-content h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+
+    .info-content p {
+      color: var(--text-sub);
+      font-size: 0.9rem;
+    }
+
+    .discord-click {
+      cursor: pointer;
+    }
+
+    .copied-toast {
+      font-size: 0.75rem;
+      color: #22c55e;
+      margin-left: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .copied-toast.show {
+      opacity: 1;
+    }
+
+    /* ==================== FOOTER ==================== */
+    footer {
+      padding: 60px 6vw 40px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-huge-text {
+      font-size: clamp(2.5rem, 9vw, 8.5rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -2px;
+      color: var(--text-muted);
+      opacity: 0.2;
+      text-align: center;
+      user-select: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .footer-huge-text:hover {
+      opacity: 0.5;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ==================== RESPONSIVE / MOBILE STYLES ==================== */
+    @media (max-width: 768px) {
+      header {
+        padding: 16px 5vw;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      nav {
+        gap: 14px;
+        width: 100%;
+        justify-content: center;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      nav a {
+        font-size: 0.75rem;
+      }
+
+      .theme-toggle {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+      }
+
+      .page-window {
+        padding: 140px 5vw 60px;
+      }
+
+      .hero-title {
+        font-size: 2.2rem;
+      }
+
+      .hero-desc {
+        font-size: 0.95rem;
+      }
+
+      .project-card:nth-child(1),
+      .project-card:nth-child(2),
+      .project-card:nth-child(3) { 
+        grid-column: span 12; 
+      }
+
+      .project-card:nth-child(1) .project-img-wrapper,
+      .project-img-wrapper {
+        height: 220px;
+      }
+
+      .info-banner {
+        padding: 24px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .btn-twist {
+        width: 100%;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SPOTLIGHT CURSOR FOLLOWER -->
+  <div class="spotlight" id="spotlight"></div>
+
+  <!-- NAVBAR -->
+  <header>
+    <div class="logo" onclick="switchPage('home')">WAYO</div>
+    <nav>
+      <a onclick="switchPage('home')" id="nav-home" class="active">HOME</a>
+      <a onclick="switchPage('about')" id="nav-about">ABOUT ME</a>
+      <a onclick="switchPage('work')" id="nav-work">WORK</a>
+      <a onclick="switchPage('contact')" id="nav-contact">CONTACT</a>
+      <button class="theme-toggle" id="themeToggleBtn">
+        <span id="themeIcon">☀️</span> <span id="themeText">Light</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ==================== WINDOW 1: HOME ==================== -->
+  <section class="page-window active" id="window-home">
+    <div class="hero">
+      <div class="hero-profile-wrapper">
+        <img src="https://yt3.googleusercontent.com/13T-rJadUD5i-khcjqFqTXx02YyWofA1fAznF72VD8azK4MEc-4MjSyYhQB2SzC15Eo2g_DAdA=s160-c-k-c0x00ffffff-no-rj" alt="WAYO Profile" class="main-profile-img">
+        <div class="hero-tag">// ROBLOX DEVELOPER & GAME CREATOR</div>
+      </div>
+      <h1 class="hero-title">
+        BUILDING <span>GAMES</span> WITH A <span>TWIST</span>.
+      </h1>
+      <div class="hero-footer">
+        <p class="hero-desc">
+          ยินดีต้อนรับสู่พอร์ตโฟลิโอของ WAYO! ผมเป็นนักพัฒนาเกมบน Roblox Studio และ Content Creator เจ้าของช่อง DEVWITHWAYO เน้นสร้างเกมที่มีระบบกระชับ สนุก และสร้างสรรค์
+        </p>
+        <a onclick="switchPage('work')" class="btn-twist">
+          <span>EXPLORE WORKS</span>
+          <div class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- STATS COUNTER BAR -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">3+</div>
+        <div class="stat-label">PROJECTS CREATED</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">LUAU</div>
+        <div class="stat-label">PRIMARY SCRIPTING</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">YT</div>
+        <div class="stat-label">DEVWITHWAYO</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">PASSION & CREATIVITY</div>
+      </div>
+    </div>
+
+    <!-- SERVICES SECTION -->
+    <div class="home-section">
+      <h2 class="home-section-title">WHAT I DO</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">🎮</div>
+          <h3 class="service-title">Roblox Game Development</h3>
+          <p class="service-desc">พัฒนาระบบเกมบน Roblox ทั้งแบบ 2D และ 3D ออกแบบเกมเพลย์และเขียนสคริปต์ด้วย Luau</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🛠️</div>
+          <h3 class="service-title">Freelance Scripting</h3>
+          <p class="service-desc">รับทำระบบเฉพาะทางตามความต้องการของลูกค้า เช่น ระบบเขาวงกต ระบบมินิเกม และ UI Mechanics</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🎥</div>
+          <h3 class="service-title">Content Creation</h3>
+          <p class="service-desc">แบ่งปันเบื้องหลังการพัฒนาเกม เทคนิคการใช้ Roblox Studio และสร้างคอนเทนต์บน YouTube</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURED PROJECTS SHOWCASE -->
+    <div class="home-section">
+      <h2 class="home-section-title">FEATURED PROJECTS</h2>
+      <div class="showcase-grid">
+        <div class="showcase-card" onclick="switchPage('work')" style="cursor: pointer;">
+          <div class="showcase-img">
+            <img src="https://tr.rbxcdn.com/180DAY-957c24c2f1db737bf71c5b426658450c/768/432/GameMediaItem5/Webp/noFilter" alt="MAZE">
+          </div>
+          <div class="showcase-info">
+            <div class="showcase-tag">FIRST FREELANCE</div>
+            <div class="showcase-title">MAZE</div>
+            <div class="showcase-desc">โปรเจกต์รับงานฟรีแลนซ์ชิ้นแรก พัฒนาระบบการเอาชีวิตรอดในเขาวงกต</div>
+          </div>
+        </div>
+
+        <div class="showcase-card" onclick="switchPage('work')" style="cursor: pointer;">
+          <div class="showcase-img">
+            <img src="https://tr.rbxcdn.com/180DAY-5fc1bb2676768af89eb3ca3e977d806c/768/432/Image/Webp/noFilter" alt="Simple MiniGames">
+          </div>
+          <div class="showcase-info">
+            <div class="showcase-tag">ROBLOX GAME</div>
+            <div class="showcase-title">Simple MiniGames</div>
+            <div class="showcase-desc">รวมมินิเกมเล่นเพลินๆ ที่เน้นความง่ายแต่เข้าถึงได้ทุกคน</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== WINDOW 2: ABOUT ME ==================== -->
+  <section class="page-window" id="window-about">
+    <div class="section-header">
+      <h2 class="section-title">ABOUT ME</h2>
+      <span style="color: var(--text-muted);">(PROFILE)</span>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-card">
+        <img src="https://yt3.googleusercontent.com/13T-rJadUD5i-khcjqFqTXx02YyWofA1fAznF72VD8azK4MEc-4MjSyYhQB2SzC15Eo2g_DAdA=s160-c-k-c0x00ffffff-no-rj" alt="WAYO Profile" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--accent);">
+        <h3>WHO AM I?</h3>
+        <p>
+          สวัสดีครับ ผม <strong>WAYO</strong> นักพัฒนาเกม Roblox และ Creator เจ้าของช่อง YouTube <strong>DEVWITHWAYO</strong> ชื่นชอบการสร้างสรรค์เกมด้วยระบบที่กระชับ แปลกใหม่ และเข้าถึงง่าย
+        </p>
+      </div>
+
+      <div class="about-card">
+        <h3>EXPERIENCE</h3>
+        <p>
+          เริ่มรับงาน Freelance พัฒนาระบบเกมชิ้นแรกในโปรเจกต์ <strong>MAZE</strong> รวมถึงสร้างผลงานเกมของตัวเองบน Roblox อย่าง <strong>Obby but 2D</strong> และ <strong>Simple MiniGames</strong> นอกจากนี้ยังชอบแชร์เบื้องหลังและขั้นตอนการพัฒนาเกมผ่านช่อง YouTube
+        </p>
+      </div>
+
+      <div class="about-card">
+        <h3>SKILLS & TOOLS</h3>
+        <p>ทักษะและความเชี่ยวชาญหลักในการพัฒนาโปรเจกต์:</p>
+        <div class="skills-list">
+          <span class="skill-tag">Roblox Studio</span>
+          <span class="skill-tag">Luau Scripting</span>
+          <span class="skill-tag">Game Design</span>
+          <span class="skill-tag">2D / 3D Mechanics</span>
+          <span class="skill-tag">UI/UX Layout</span>
+          <span class="skill-tag">Content Creation</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== WINDOW 3: WORK / PROJECTS ==================== -->
+  <section class="page-window" id="window-work">
+    <div class="section-header">
+      <h2 class="section-title">ALL PROJECTS</h2>
+      <span style="color: var(--text-muted);">(FEATURED)</span>
+    </div>
+
+    <div class="projects-grid">
+      <!-- Project 1: MAZE (First Freelance) -->
+      <a href="https://www.youtube.com/@DEVWITHWAYO" target="_blank" class="project-card">
+        <div class="project-img-wrapper">
+          <div class="project-badge">FIRST FREELANCE JOB</div>
+          <img src="https://tr.rbxcdn.com/180DAY-957c24c2f1db737bf71c5b426658450c/768/432/GameMediaItem5/Webp/noFilter" alt="MAZE Game Preview">
+        </div>
+        <div class="project-info">
+          <div>
+            <div class="project-title">MAZE</div>
+            <div class="project-category">Freelance Project • Roblox Development</div>
+          </div>
+          <span style="font-size: 1.3rem;">↗</span>
+        </div>
+      </a>
+
+      <!-- Project 2: SimpleMiniGames -->
+      <a href="https://www.roblox.com/games/132654599492990/Simple-MiniGames" target="_blank" class="project-card">
+        <div class="project-img-wrapper">
+          <div class="project-badge">ROBLOX GAME</div>
+          <img src="https://tr.rbxcdn.com/180DAY-5fc1bb2676768af89eb3ca3e977d806c/768/432/Image/Webp/noFilter" alt="SimpleMiniGames Preview">
+        </div>
+        <div class="project-info">
+          <div>
+            <div class="project-title">Simple MiniGames</div>
+            <div class="project-category">Roblox Game Creation</div>
+          </div>
+          <span style="font-size: 1.3rem;">↗</span>
+        </div>
+      </a>
+
+      <!-- Project 3: Obby but 2D -->
+      <a href="https://www.roblox.com/games/138897537548440/Obby-but-2D" target="_blank" class="project-card">
+        <div class="project-img-wrapper">
+          <div class="project-badge">ROBLOX GAME</div>
+          <img src="https://tr.rbxcdn.com/180DAY-957c24c2f1db737bf71c5b426658450c/768/432/GameMediaItem5/Webp/noFilter" alt="Obby but 2D Preview">
+        </div>
+        <div class="project-info">
+          <div>
+            <div class="project-title">Obby but 2D</div>
+            <div class="project-category">Roblox Game Creation</div>
+          </div>
+          <span style="font-size: 1.3rem;">↗</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== WINDOW 4: CONTACT ==================== -->
+  <section class="page-window" id="window-contact">
+    <div class="section-header">
+      <h2 class="section-title">GET IN TOUCH</h2>
+      <span style="color: var(--text-muted);">(CONNECT)</span>
+    </div>
+
+    <div class="contact-container">
+      <!-- DISCORD USERNAME CARD -->
+      <div class="info-banner discord-click" id="discordBtn">
+        <div class="info-content">
+          <h4>DISCORD USERNAME</h4>
+          <h3>@wayopitha_65453</h3>
+          <p>คลิกที่นี่เพื่อก๊อปปี้ชื่อ Discord สำหรับติดต่อหรือพูดคุยรายบุคคล</p>
+        </div>
+        <div class="btn-twist">
+          <span>COPY USERNAME</span>
+          <span class="copied-toast" id="copiedToast">Copied!</span>
+        </div>
+      </div>
+
+      <!-- DISCORD SERVER CARD -->
+      <div class="info-banner">
+        <div class="info-content">
+          <h4>DISCORD SERVER</h4>
+          <h3>Community & Developer Server</h3>
+          <p>เข้าร่วมดิสคอร์ดเซิร์ฟเวอร์หลัก เพื่อพูดคุยและอัปเดตผลงานเกม</p>
+        </div>
+        <a href="https://discord.gg/H2YMGrXmV" target="_blank" class="btn-twist">
+          <span>JOIN SERVER</span>
+          <div class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </a>
+      </div>
+
+      <!-- YOUTUBE CARD -->
+      <div class="info-banner">
+        <div class="info-content">
+          <h4>YOUTUBE CHANNEL</h4>
+          <h3>DEVWITHWAYO</h3>
+          <p>รับชมวิดีโอการพัฒนาโปรเจกต์ Roblox สตรีมมิ่งเบื้องหลัง และบทเรียนต่างๆ</p>
+        </div>
+        <a href="https://www.youtube.com/@DEVWITHWAYO" target="_blank" class="btn-twist">
+          <span>VISIT CHANNEL</span>
+          <div class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </a>
+      </div>
+
+      <!-- GITHUB CARD -->
+      <div class="info-banner">
+        <div class="info-content">
+          <h4>GITHUB</h4>
+          <h3>github.com/mrwayooo</h3>
+          <p>ติดตามซอร์สโค้ดและ Repository ต่างๆ</p>
+        </div>
+        <a href="https://github.com/mrwayooo" target="_blank" class="btn-twist">
+          <span>VIEW PROFILE</span>
+          <div class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-huge-text">DEVWITHWAYO</div>
+    <div class="footer-bottom">
+      <div>© 2026 WAYO. ALL RIGHTS RESERVED</div>
+      <div>SAMUTPRAKARN, THAILAND</div>
+    </div>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    // 1. MULTI-PAGE WINDOW NAVIGATION
+    function switchPage(pageId) {
+      const windows = document.querySelectorAll('.page-window');
+      windows.forEach(win => win.classList.remove('active'));
+
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => link.classList.remove('active'));
+
+      const targetWindow = document.getElementById(`window-${pageId}`);
+      if (targetWindow) targetWindow.classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      const activeNav = document.getElementById(`nav-${pageId}`);
+      if (activeNav) activeNav.classList.add('active');
+    }
+
+    // 2. LIGHT / DARK MODE TOGGLE
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.body.getAttribute('data-theme');
+      if (currentTheme === 'light') {
+        document.body.removeAttribute('data-theme');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Light';
+      } else {
+        document.body.setAttribute('data-theme', 'light');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'Dark';
+      }
+    });
+
+    // 3. SPOTLIGHT EFFECT
+    const spotlight = document.getElementById('spotlight');
+    window.addEventListener('mousemove', (e) => {
+      if (window.innerWidth > 768) {
+        spotlight.style.left = `${e.clientX}px`;
+        spotlight.style.top = `${e.clientY}px`;
+      }
+    });
+
+    // 4. 3D TILT EFFECT ON CARDS
+    const cards = document.querySelectorAll('.project-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        if (window.innerWidth > 768) {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          
+          const rotateX = ((y - centerY) / centerY) * -6;
+          const rotateY = ((x - centerX) / centerX) * 6;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+        }
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+      });
+    });
+
+    // 5. COPY DISCORD USERNAME
+    const discordBtn = document.getElementById('discordBtn');
+    const copiedToast = document.getElementById('copiedToast');
+
+    discordBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText('@wayopitha_65453').then(() => {
+        copiedToast.classList.add('show');
+        setTimeout(() => {
+          copiedToast.classList.remove('show');
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>

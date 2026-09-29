@@ -1,4 +1,4 @@
-# @DEVWITHWAYO
+# DEVWITHWAYO
 
 > Roblox Developer & Content Creator 🚀
 
